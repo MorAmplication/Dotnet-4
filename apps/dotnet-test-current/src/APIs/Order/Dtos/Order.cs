@@ -1,10 +1,12 @@
 namespace DotnetTestCurrent.APIs.Dtos;
 
-public class CustomerDto : CustomerIdDto
+public class Order
 {
+    public string Id { get; set; }
+
     public DateTime CreatedAt { get; set; }
 
     public DateTime UpdatedAt { get; set; }
 
-    public List<OrderIdDto>? Orders { get; set; }
+    public string? Customer { get; set; }
 }

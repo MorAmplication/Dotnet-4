@@ -21,9 +21,9 @@ public abstract class CustomersServiceBase : ICustomersService
     /// <summary>
     /// Create one Customer
     /// </summary>
-    public async Task<CustomerDto> CreateCustomer(CustomerCreateInput createDto)
+    public async Task<Customer> CreateCustomer(CustomerCreateInput createDto)
     {
-        var customer = new Customer
+        var customer = new CustomerDbModel
         {
             CreatedAt = createDto.CreatedAt,
             UpdatedAt = createDto.UpdatedAt
@@ -43,7 +43,7 @@ public abstract class CustomersServiceBase : ICustomersService
         _context.Customers.Add(customer);
         await _context.SaveChangesAsync();
 
-        var result = await _context.FindAsync<Customer>(customer.Id);
+        var result = await _context.FindAsync<CustomerDbModel>(customer.Id);
 
         if (result == null)
         {
@@ -56,11 +56,14 @@ public abstract class CustomersServiceBase : ICustomersService
     /// <summary>
     /// Connect multiple Orders records to Customer
     /// </summary>
-    public async Task ConnectOrders(CustomerIdDto idDto, OrderIdDto[] ordersId)
+    public async Task ConnectOrders(
+        CustomerWhereUniqueInput uniqueId,
+        OrderWhereUniqueInput[] ordersId
+    )
     {
         var customer = await _context
             .Customers.Include(x => x.Orders)
-            .FirstOrDefaultAsync(x => x.Id == idDto.Id);
+            .FirstOrDefaultAsync(x => x.Id == uniqueId.Id);
         if (customer == null)
         {
             throw new NotFoundException();
@@ -87,11 +90,14 @@ public abstract class CustomersServiceBase : ICustomersService
     /// <summary>
     /// Disconnect multiple Orders records from Customer
     /// </summary>
-    public async Task DisconnectOrders(CustomerIdDto idDto, OrderIdDto[] ordersId)
+    public async Task DisconnectOrders(
+        CustomerWhereUniqueInput uniqueId,
+        OrderWhereUniqueInput[] ordersId
+    )
     {
         var customer = await _context
             .Customers.Include(x => x.Orders)
-            .FirstOrDefaultAsync(x => x.Id == idDto.Id);
+            .FirstOrDefaultAsync(x => x.Id == uniqueId.Id);
         if (customer == null)
         {
             throw new NotFoundException();
@@ -111,17 +117,17 @@ public abstract class CustomersServiceBase : ICustomersService
     /// <summary>
     /// Find multiple Orders records for Customer
     /// </summary>
-    public async Task<List<OrderDto>> FindOrders(
-        CustomerIdDto idDto,
-        OrderFindMany customerFindMany
+    public async Task<List<Order>> FindOrders(
+        CustomerWhereUniqueInput uniqueId,
+        OrderFindManyArgs customerFindManyArgs
     )
     {
         var orders = await _context
-            .Orders.Where(m => m.CustomerId == idDto.Id)
-            .ApplyWhere(customerFindMany.Where)
-            .ApplySkip(customerFindMany.Skip)
-            .ApplyTake(customerFindMany.Take)
-            .ApplyOrderBy(customerFindMany.SortBy)
+            .Orders.Where(m => m.CustomerId == uniqueId.Id)
+            .ApplyWhere(customerFindManyArgs.Where)
+            .ApplySkip(customerFindManyArgs.Skip)
+            .ApplyTake(customerFindManyArgs.Take)
+            .ApplyOrderBy(customerFindManyArgs.SortBy)
             .ToListAsync();
 
         return orders.Select(x => x.ToDto()).ToList();
@@ -130,7 +136,7 @@ public abstract class CustomersServiceBase : ICustomersService
     /// <summary>
     /// Meta data about Customer records
     /// </summary>
-    public async Task<MetadataDto> CustomersMeta(CustomerFindMany findManyArgs)
+    public async Task<MetadataDto> CustomersMeta(CustomerFindManyArgs findManyArgs)
     {
         var count = await _context.Customers.ApplyWhere(findManyArgs.Where).CountAsync();
 
@@ -140,11 +146,14 @@ public abstract class CustomersServiceBase : ICustomersService
     /// <summary>
     /// Update multiple Orders records for Customer
     /// </summary>
-    public async Task UpdateOrders(CustomerIdDto idDto, OrderIdDto[] ordersId)
+    public async Task UpdateOrders(
+        CustomerWhereUniqueInput uniqueId,
+        OrderWhereUniqueInput[] ordersId
+    )
     {
         var customer = await _context
             .Customers.Include(t => t.Orders)
-            .FirstOrDefaultAsync(x => x.Id == idDto.Id);
+            .FirstOrDefaultAsync(x => x.Id == uniqueId.Id);
         if (customer == null)
         {
             throw new NotFoundException();
@@ -166,9 +175,9 @@ public abstract class CustomersServiceBase : ICustomersService
     /// <summary>
     /// Delete one Customer
     /// </summary>
-    public async Task DeleteCustomer(CustomerIdDto idDto)
+    public async Task DeleteCustomer(CustomerWhereUniqueInput uniqueId)
     {
-        var customer = await _context.Customers.FindAsync(idDto.Id);
+        var customer = await _context.Customers.FindAsync(uniqueId.Id);
         if (customer == null)
         {
             throw new NotFoundException();
@@ -181,7 +190,7 @@ public abstract class CustomersServiceBase : ICustomersService
     /// <summary>
     /// Find many Customers
     /// </summary>
-    public async Task<List<CustomerDto>> Customers(CustomerFindMany findManyArgs)
+    public async Task<List<Customer>> Customers(CustomerFindManyArgs findManyArgs)
     {
         var customers = await _context
             .Customers.Include(x => x.Orders)
@@ -196,10 +205,10 @@ public abstract class CustomersServiceBase : ICustomersService
     /// <summary>
     /// Get one Customer
     /// </summary>
-    public async Task<CustomerDto> Customer(CustomerIdDto idDto)
+    public async Task<Customer> Customer(CustomerWhereUniqueInput uniqueId)
     {
         var customers = await this.Customers(
-            new CustomerFindMany { Where = new CustomerWhereInput { Id = idDto.Id } }
+            new CustomerFindManyArgs { Where = new CustomerWhereInput { Id = uniqueId.Id } }
         );
         var customer = customers.FirstOrDefault();
         if (customer == null)
@@ -213,14 +222,17 @@ public abstract class CustomersServiceBase : ICustomersService
     /// <summary>
     /// Update one Customer
     /// </summary>
-    public async Task UpdateCustomer(CustomerIdDto idDto, CustomerUpdateInput updateDto)
+    public async Task UpdateCustomer(
+        CustomerWhereUniqueInput uniqueId,
+        CustomerUpdateInput updateDto
+    )
     {
-        var customer = updateDto.ToModel(idDto);
+        var customer = updateDto.ToModel(uniqueId);
 
         if (updateDto.Orders != null)
         {
             customer.Orders = await _context
-                .Orders.Where(order => updateDto.Orders.Select(t => t.Id).Contains(order.Id))
+                .Orders.Where(order => updateDto.Orders.Select(t => t).Contains(order.Id))
                 .ToListAsync();
         }
 

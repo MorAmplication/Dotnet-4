@@ -8,7 +8,9 @@ public class DotnetTestCurrentDbContext : DbContext
     public DotnetTestCurrentDbContext(DbContextOptions<DotnetTestCurrentDbContext> options)
         : base(options) { }
 
-    public DbSet<Customer> Customers { get; set; }
+    public DbSet<CustomerDbModel> Customers { get; set; }
 
-    public DbSet<Order> Orders { get; set; }
+    public DbSet<OrderDbModel> Orders { get; set; }
+
+    public DbSet<AdrressDbModel> Adrresses { get; set; }
 }

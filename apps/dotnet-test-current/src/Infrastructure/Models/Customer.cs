@@ -4,7 +4,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 namespace DotnetTestCurrent.Infrastructure.Models;
 
 [Table("Customers")]
-public class Customer
+public class CustomerDbModel
 {
     [Key()]
     [Required()]
@@ -16,5 +16,5 @@ public class Customer
     [Required()]
     public DateTime UpdatedAt { get; set; }
 
-    public List<Order>? Orders { get; set; } = new List<Order>();
+    public List<OrderDbModel>? Orders { get; set; } = new List<OrderDbModel>();
 }

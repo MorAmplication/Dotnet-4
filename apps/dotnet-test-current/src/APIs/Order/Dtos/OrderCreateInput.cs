@@ -8,5 +8,5 @@ public class OrderCreateInput
 
     public DateTime UpdatedAt { get; set; }
 
-    public CustomerIdDto? Customer { get; set; }
+    public Customer? Customer { get; set; }
 }

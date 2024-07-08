@@ -21,7 +21,7 @@ public abstract class CustomersControllerBase : ControllerBase
     /// Create one Customer
     /// </summary>
     [HttpPost()]
-    public async Task<ActionResult<CustomerDto>> CreateCustomer(CustomerCreateInput input)
+    public async Task<ActionResult<Customer>> CreateCustomer(CustomerCreateInput input)
     {
         var customer = await _service.CreateCustomer(input);
 
@@ -33,13 +33,13 @@ public abstract class CustomersControllerBase : ControllerBase
     /// </summary>
     [HttpPost("{Id}/orders")]
     public async Task<ActionResult> ConnectOrders(
-        [FromRoute()] CustomerIdDto idDto,
-        [FromQuery()] OrderIdDto[] ordersId
+        [FromRoute()] CustomerWhereUniqueInput uniqueId,
+        [FromQuery()] OrderWhereUniqueInput[] ordersId
     )
     {
         try
         {
-            await _service.ConnectOrders(idDto, ordersId);
+            await _service.ConnectOrders(uniqueId, ordersId);
         }
         catch (NotFoundException)
         {
@@ -54,13 +54,13 @@ public abstract class CustomersControllerBase : ControllerBase
     /// </summary>
     [HttpDelete("{Id}/orders")]
     public async Task<ActionResult> DisconnectOrders(
-        [FromRoute()] CustomerIdDto idDto,
-        [FromBody()] OrderIdDto[] ordersId
+        [FromRoute()] CustomerWhereUniqueInput uniqueId,
+        [FromBody()] OrderWhereUniqueInput[] ordersId
     )
     {
         try
         {
-            await _service.DisconnectOrders(idDto, ordersId);
+            await _service.DisconnectOrders(uniqueId, ordersId);
         }
         catch (NotFoundException)
         {
@@ -74,14 +74,14 @@ public abstract class CustomersControllerBase : ControllerBase
     /// Find multiple Orders records for Customer
     /// </summary>
     [HttpGet("{Id}/orders")]
-    public async Task<ActionResult<List<OrderDto>>> FindOrders(
-        [FromRoute()] CustomerIdDto idDto,
-        [FromQuery()] OrderFindMany filter
+    public async Task<ActionResult<List<Order>>> FindOrders(
+        [FromRoute()] CustomerWhereUniqueInput uniqueId,
+        [FromQuery()] OrderFindManyArgs filter
     )
     {
         try
         {
-            return Ok(await _service.FindOrders(idDto, filter));
+            return Ok(await _service.FindOrders(uniqueId, filter));
         }
         catch (NotFoundException)
         {
@@ -94,7 +94,7 @@ public abstract class CustomersControllerBase : ControllerBase
     /// </summary>
     [HttpPost("meta")]
     public async Task<ActionResult<MetadataDto>> CustomersMeta(
-        [FromQuery()] CustomerFindMany filter
+        [FromQuery()] CustomerFindManyArgs filter
     )
     {
         return Ok(await _service.CustomersMeta(filter));
@@ -105,13 +105,13 @@ public abstract class CustomersControllerBase : ControllerBase
     /// </summary>
     [HttpPatch("{Id}/orders")]
     public async Task<ActionResult> UpdateOrders(
-        [FromRoute()] CustomerIdDto idDto,
-        [FromBody()] OrderIdDto[] ordersId
+        [FromRoute()] CustomerWhereUniqueInput uniqueId,
+        [FromBody()] OrderWhereUniqueInput[] ordersId
     )
     {
         try
         {
-            await _service.UpdateOrders(idDto, ordersId);
+            await _service.UpdateOrders(uniqueId, ordersId);
         }
         catch (NotFoundException)
         {
@@ -125,11 +125,11 @@ public abstract class CustomersControllerBase : ControllerBase
     /// Delete one Customer
     /// </summary>
     [HttpDelete("{Id}")]
-    public async Task<ActionResult> DeleteCustomer([FromRoute()] CustomerIdDto idDto)
+    public async Task<ActionResult> DeleteCustomer([FromRoute()] CustomerWhereUniqueInput uniqueId)
     {
         try
         {
-            await _service.DeleteCustomer(idDto);
+            await _service.DeleteCustomer(uniqueId);
         }
         catch (NotFoundException)
         {
@@ -143,8 +143,8 @@ public abstract class CustomersControllerBase : ControllerBase
     /// Find many Customers
     /// </summary>
     [HttpGet()]
-    public async Task<ActionResult<List<CustomerDto>>> Customers(
-        [FromQuery()] CustomerFindMany filter
+    public async Task<ActionResult<List<Customer>>> Customers(
+        [FromQuery()] CustomerFindManyArgs filter
     )
     {
         return Ok(await _service.Customers(filter));
@@ -154,11 +154,13 @@ public abstract class CustomersControllerBase : ControllerBase
     /// Get one Customer
     /// </summary>
     [HttpGet("{Id}")]
-    public async Task<ActionResult<CustomerDto>> Customer([FromRoute()] CustomerIdDto idDto)
+    public async Task<ActionResult<Customer>> Customer(
+        [FromRoute()] CustomerWhereUniqueInput uniqueId
+    )
     {
         try
         {
-            return await _service.Customer(idDto);
+            return await _service.Customer(uniqueId);
         }
         catch (NotFoundException)
         {
@@ -171,13 +173,13 @@ public abstract class CustomersControllerBase : ControllerBase
     /// </summary>
     [HttpPatch("{Id}")]
     public async Task<ActionResult> UpdateCustomer(
-        [FromRoute()] CustomerIdDto idDto,
+        [FromRoute()] CustomerWhereUniqueInput uniqueId,
         [FromQuery()] CustomerUpdateInput customerUpdateDto
     )
     {
         try
         {
-            await _service.UpdateCustomer(idDto, customerUpdateDto);
+            await _service.UpdateCustomer(uniqueId, customerUpdateDto);
         }
         catch (NotFoundException)
         {

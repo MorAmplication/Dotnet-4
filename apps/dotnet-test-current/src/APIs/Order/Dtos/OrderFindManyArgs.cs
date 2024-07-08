@@ -5,4 +5,4 @@ using Microsoft.AspNetCore.Mvc;
 namespace DotnetTestCurrent.APIs.Dtos;
 
 [BindProperties(SupportsGet = true)]
-public class OrderFindMany : FindManyInput<Order, OrderWhereInput> { }
+public class OrderFindManyArgs : FindManyInput<Order, OrderWhereInput> { }

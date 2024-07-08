@@ -5,20 +5,23 @@ namespace DotnetTestCurrent.APIs.Extensions;
 
 public static class OrdersExtensions
 {
-    public static OrderDto ToDto(this Order model)
+    public static Order ToDto(this OrderDbModel model)
     {
-        return new OrderDto
+        return new Order
         {
             Id = model.Id,
             CreatedAt = model.CreatedAt,
             UpdatedAt = model.UpdatedAt,
-            Customer = new CustomerIdDto { Id = model.CustomerId },
+            Customer = model.CustomerId,
         };
     }
 
-    public static Order ToModel(this OrderUpdateInput updateDto, OrderIdDto idDto)
+    public static OrderDbModel ToModel(
+        this OrderUpdateInput updateDto,
+        OrderWhereUniqueInput uniqueId
+    )
     {
-        var order = new Order { Id = idDto.Id };
+        var order = new OrderDbModel { Id = uniqueId.Id };
 
         // map required fields
         if (updateDto.CreatedAt != null)

@@ -4,7 +4,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 namespace DotnetTestCurrent.Infrastructure.Models;
 
 [Table("Orders")]
-public class Order
+public class OrderDbModel
 {
     [Key()]
     [Required()]
@@ -19,5 +19,5 @@ public class Order
     public string? CustomerId { get; set; }
 
     [ForeignKey(nameof(CustomerId))]
-    public Customer? Customer { get; set; } = null;
+    public CustomerDbModel? Customer { get; set; } = null;
 }

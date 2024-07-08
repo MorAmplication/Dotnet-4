@@ -8,35 +8,35 @@ public interface IOrdersService
     /// <summary>
     /// Create one Order
     /// </summary>
-    public Task<OrderDto> CreateOrder(OrderCreateInput orderDto);
+    public Task<Order> CreateOrder(OrderCreateInput order);
 
     /// <summary>
     /// Delete one Order
     /// </summary>
-    public Task DeleteOrder(OrderIdDto idDto);
+    public Task DeleteOrder(OrderWhereUniqueInput uniqueId);
 
     /// <summary>
     /// Find many Orders
     /// </summary>
-    public Task<List<OrderDto>> Orders(OrderFindMany findManyArgs);
+    public Task<List<Order>> Orders(OrderFindManyArgs findManyArgs);
 
     /// <summary>
     /// Get one Order
     /// </summary>
-    public Task<OrderDto> Order(OrderIdDto idDto);
+    public Task<Order> Order(OrderWhereUniqueInput uniqueId);
 
     /// <summary>
     /// Get a Customer record for Order
     /// </summary>
-    public Task<CustomerDto> GetCustomer(OrderIdDto idDto);
+    public Task<Customer> GetCustomer(OrderWhereUniqueInput uniqueId);
 
     /// <summary>
     /// Meta data about Order records
     /// </summary>
-    public Task<MetadataDto> OrdersMeta(OrderFindMany findManyArgs);
+    public Task<MetadataDto> OrdersMeta(OrderFindManyArgs findManyArgs);
 
     /// <summary>
     /// Update one Order
     /// </summary>
-    public Task UpdateOrder(OrderIdDto idDto, OrderUpdateInput updateDto);
+    public Task UpdateOrder(OrderWhereUniqueInput uniqueId, OrderUpdateInput updateDto);
 }

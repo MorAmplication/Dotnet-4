@@ -8,5 +8,5 @@ public class OrderWhereInput
 
     public DateTime? UpdatedAt { get; set; }
 
-    public CustomerIdDto? Customer { get; set; }
+    public string? Customer { get; set; }
 }

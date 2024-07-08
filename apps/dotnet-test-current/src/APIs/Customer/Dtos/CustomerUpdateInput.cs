@@ -8,5 +8,5 @@ public class CustomerUpdateInput
 
     public DateTime? UpdatedAt { get; set; }
 
-    public List<OrderIdDto>? Orders { get; set; }
+    public List<string>? Orders { get; set; }
 }

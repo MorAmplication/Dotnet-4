@@ -1,6 +1,6 @@
 namespace DotnetTestCurrent.APIs.Dtos;
 
-public class CustomerIdDto
+public class AdrressWhereUniqueInput
 {
     public string Id { get; set; }
 }
